@@ -1,0 +1,28 @@
+.app {
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    flex: 1;
+  }
+  
+  .resetButton {
+      width: 98%;
+  }
+  
+  .numberUtilContainer {
+    flex: 3;
+  }
+  
+  .numberButtonContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .operatorButtonContainer {
+    flex: 1;
+  }
+  
