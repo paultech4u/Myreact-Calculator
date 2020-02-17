@@ -1,8 +1,11 @@
 import React from "react";
 
+import classes from "./App.module.css";
+
 import Display from "./Display/Display";
 import ButtonList from "./components/ButtonList";
 import Button from "./components/Button/Button";
+
 
 class App extends React.Component {
   constructor(props) {
@@ -11,17 +14,20 @@ class App extends React.Component {
       currentOutput: "0",
       prevOutput: "",
       operator: "",
-      done: true
+      done: true,
     };
   }
   numberText = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "C"];
   operatorText = ["+", "-", "*", "/", "="];
 
   onNumberClick = number => {
-    this.setState(({ currentOutput }) => {
+    this.setState(({ currentOutput, done }) => {
       if (number === ".") {
         if (!currentOutput.includes("."))
-          return { currentOutput: currentOutput + number };
+          return {
+            currentOutput: currentOutput + number,
+            done: true
+          };
         return;
       }
       if (number === "C") {
@@ -29,12 +35,13 @@ class App extends React.Component {
           currentOutput:
             currentOutput.length === 1
               ? "0"
-              : currentOutput.substring(0, currentOutput.length - 1)
+              : currentOutput.substring(0, currentOutput.length - 1),
+              done: true
         };
       }
       return {
-        currentOutput:
-          currentOutput === "0" ? number : currentOutput + number
+        currentOutput: currentOutput === "0" ? number : currentOutput + number,
+        done
       };
     });
   };
@@ -45,13 +52,15 @@ class App extends React.Component {
       if (prevOperator && prevOutput) {
         return {
           currentOutput: this.evaluate(state),
-          operator
+          operator,
+          done: true,
         };
-      }else{
+      } else {
         return {
           prevOutput: currentOutput,
-          currentOutput: '',
-          operator
+          currentOutput: "",
+          operator,
+          done: false
         };
       }
     });
@@ -60,13 +69,13 @@ class App extends React.Component {
   evaluate({ currentOutput, prevOutput, operator }) {
     switch (operator) {
       case "+":
-        return (+prevOutput + +currentOutput);
+        return +prevOutput + +currentOutput;
       case "-":
-        return (+prevOutput - +currentOutput);
+        return +prevOutput - +currentOutput;
       case "*":
-        return (+prevOutput * +currentOutput);
+        return +prevOutput * +currentOutput;
       case "/":
-        return (+prevOutput / +currentOutput);
+        return +prevOutput / +currentOutput;
       default:
         break;
     }
@@ -82,17 +91,23 @@ class App extends React.Component {
   };
 
   render() {
-    console.log(!this.state.prevOutput);
+    // const blink = this.state.blink;
+    // const {style} = blink === true ? '0.5' : null
     return (
-      <div className="app">
+      <div className={classes.app}>
         <Display value={this.state.currentOutput || this.state.prevOutput} />
-        <div className="button-container">
-          <Button title={"RESET"} onClick={this.reset} />
+        <div className={classes.buttonContainer}>
+          <div className={classes.numberUtilContainer}>
+            <Button className={classes.resetButton} title={"RESET"} onClick={this.reset} />
+            <ButtonList
+              // style={{opacity: style}}
+              className={classes.numberButtonContainer}
+              buttons={this.numberText}
+              onButtonClick={this.onNumberClick}
+            />
+          </div>
           <ButtonList
-            buttons={this.numberText}
-            onButtonClick={this.onNumberClick}
-          />
-          <ButtonList
+            className={classes.operatorButtonContainer}
             buttons={this.operatorText}
             onButtonClick={this.onOperatorClick}
           />
